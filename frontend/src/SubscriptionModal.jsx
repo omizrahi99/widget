@@ -1,15 +1,27 @@
-import React from "react";
-import Box from "@mui/material/Box";
+import React, { useEffect } from "react";
+import { useState } from "react";
+
 import Card from "@mui/material/Card";
-import CardActions from "@mui/material/CardActions";
+
 import CardContent from "@mui/material/CardContent";
-import Button from "@mui/material/Button";
+
 import Typography from "@mui/material/Typography";
 import { Divider } from "@mui/material";
+import { useSDK } from "@metamask/sdk-react";
 
-interface SubscriptionModalProps {}
+const SubscriptionModal = ({ planName = "Premium" }) => {
+  const [account, setAccount] = useState();
+  const { sdk, connected, connecting, provider, chainId } = useSDK();
 
-const SubscriptionModal = ({ planName = "Premium" }): any => {
+  const connect = async () => {
+    try {
+      const accounts = await sdk?.connect();
+      setAccount(accounts?.[0]);
+    } catch (err) {
+      console.warn(`failed to connect..`, err);
+    }
+  };
+
   return (
     <Card sx={{ minWidth: 400, boxShadow: 3, borderRadius: 2 }}>
       <CardContent>
@@ -46,6 +58,9 @@ const SubscriptionModal = ({ planName = "Premium" }): any => {
             </div>
           </CardContent>
         </Card>
+        <button style={{ padding: 10, margin: 10 }} onClick={connect}>
+          Connect
+        </button>
       </CardContent>
       {/* <CardActions>
         <Button size="small">Learn More</Button>
