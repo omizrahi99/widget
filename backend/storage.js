@@ -22,12 +22,12 @@ function writeData(data) {
 // Add a new user
 function addUser(user) {
     const data = readData();
-    if (data[user.walletAdressess]) {
+    if (data[user.walletAdress]) {
         throw new Error('User already exists with the given walletAdress.');
     }
     // Convert the user instance to a plain object
-    data[user.walletAdressess] = {
-        walletAdressess: user.walletAdressess,
+    data[user.walletAdress] = {
+        walletAdress: user.walletAdress,
         sessionKey: user.sessionKey,
         payDate: user.payDate,
         publicKey: user.publicKey,
@@ -36,7 +36,7 @@ function addUser(user) {
     writeData(data);
 }
 // Get a user by walletAdress
-function getUser(walletAdressess) {
+function getUser(walletAdress) {
     const data = readData();
     return data[walletAdress] || null;
 }
@@ -46,6 +46,22 @@ function listUsers() {
     const data = readData();
     return Object.values(data);
 }
+
+function updateUser(walletAdress, userState) {
+    const data = readData();
+
+    const user = data[walletAdress];
+    if (!user) {
+        throw new Error('User not found with the given walletAdr.');
+    }
+
+    // Update the userState
+    user.userState = userState;
+
+    // Save back to storage
+    writeData(data);
+}
+
 
 module.exports = {
     addUser,

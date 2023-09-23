@@ -1,6 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser'); // To parse the request body
 const { addUser } = require('./storage.js');
+const {getPayersFromLastBlock} = require('./ethereum.js');
 
 const app = express();
 const PORT = 3000;
@@ -45,7 +46,7 @@ app.get('/user-state/:walletAdress', (req, res) => {
 app.get('/get-user/:walletAdress', (req, res) => {
     try {
         const walletAdress = req.params.walletAdress;
-        const user = getUser(walletAdr);
+        const user = getUser(walletAdress);
 
         if (!user) {
             return res.status(404).json({ message: 'User not found.' });
@@ -58,6 +59,21 @@ app.get('/get-user/:walletAdress', (req, res) => {
     }
 });
 
+
+async function updateUserState() {
+    const payers = await getPayersFromLastBlock();
+
+    payers.forEach(payerAddress => {
+        if (storage[payerAddress]) {  // Check if payer exists in our mock storage
+            storage[payerAddress].payState = true;
+        }
+    });
+}
+
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
+
+    getPayersFromLastBlock()
+
+    setInterval(getPayersFromLastBlock, 12000);
 });
