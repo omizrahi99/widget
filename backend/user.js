@@ -1,7 +1,7 @@
 
 class User {
-    constructor(walletAdressess, sessionKey, payDate, publicKey, payState) {
-      this.walletAdressess = walletAdressess;
+    constructor(walletAdress, sessionKey, payDate, publicKey, payState) {
+      this.walletAdress = walletAdress;
       this.sessionKey = sessionKey;
       this.payDate = payDate;
       this.publicKey = publicKey;
@@ -9,7 +9,7 @@ class User {
     }
     // Static method to create a User instance from a JSON object
     static fromJson(json) {
-        return new User(json.walletAdressess, json.sessionKey, json.payDate, json.publicKey, json.userState);
+        return new User(json.walletAdress, json.sessionKey, json.payDate, json.publicKey, json.userState);
     }
   
 }
