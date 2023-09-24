@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useState } from "react";
 import Card from "@mui/material/Card";
-import { Button } from "@mui/material";
+import { Button, CircularProgress } from "@mui/material";
 import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
 import { Divider } from "@mui/material";
@@ -16,6 +16,7 @@ import { Addresses } from "./helpers/Addresses";
 import TransferCrypto from "./components/TransferCrypto";
 import { ChainId } from "@biconomy/core-types";
 import { ethers } from "ethers";
+import Confetti from "react-confetti";
 
 const SubscriptionModal = ({ planName = "Premium" }) => {
   const [metamaskAccountAddress, setMetamaskAccountAddress] = useState();
@@ -23,8 +24,10 @@ const SubscriptionModal = ({ planName = "Premium" }) => {
   const [smartAccount, setSmartAccount] = useState();
   const [smartAccountBalance, setSmartAccountBalance] = useState(0);
   const [transferModalOpen, setTransferModalOpen] = useState(false);
+  const [subscribeLoading, setSubscribeLoading] = useState(false);
+  const [userFinishedSubscribing, setUserFinishedSubscribing] = useState(false);
 
-  const monthlyPayment = 0.1;
+  const monthlyPayment = 0.01;
 
   const subscribeButtonDisabled =
     !metamaskAccountAddress || smartAccountBalance < monthlyPayment;
@@ -113,6 +116,13 @@ const SubscriptionModal = ({ planName = "Premium" }) => {
     }
   }, [metamaskAccountAddress]);
 
+  const getSubButtonText = () => {
+    if (subscribeLoading) {
+      return <CircularProgress size={20} sx={{ color: "white" }} />;
+    } else {
+      return "Subscribe";
+    }
+  };
   return (
     <>
       <Card sx={{ minWidth: 400, boxShadow: 3, borderRadius: 2 }}>
@@ -179,7 +189,7 @@ const SubscriptionModal = ({ planName = "Premium" }) => {
                   <span style={{ marginRight: 5 }}>
                     <EthereumIcon />
                   </span>
-                  0.1 ETH billed monthly
+                  {monthlyPayment} ETH billed monthly
                 </Typography>
               </div>
               <Divider style={{ marginBottom: 10 }} />
@@ -199,7 +209,7 @@ const SubscriptionModal = ({ planName = "Premium" }) => {
                   <span style={{ marginRight: 5 }}>
                     <EthereumIcon />
                   </span>
-                  0.1 ETH
+                  {monthlyPayment} ETH
                 </Typography>
               </div>
             </CardContent>
@@ -228,26 +238,33 @@ const SubscriptionModal = ({ planName = "Premium" }) => {
               </Button>
             </>
           )}
-          <Button
-            // disabled={subscribeButtonDisabled}
-            style={{
-              padding: 10,
-              marginTop: 20,
-              backgroundColor: subscribeButtonDisabled ? "gray" : "#00796b",
-              color: "white",
-              width: "100%",
-              textTransform: "capitalize",
-            }}
-            onClick={async () => {
-              await Biconomy.createSession(
-                smartAccount,
-                smartAccountAddress,
-                0.01
-              );
-            }}
-          >
-            Subscribe
-          </Button>
+          {userFinishedSubscribing ? (
+            "Subscribed!"
+          ) : (
+            <Button
+              // disabled={subscribeButtonDisabled}
+              style={{
+                padding: 10,
+                marginTop: 20,
+                backgroundColor: subscribeButtonDisabled ? "gray" : "#00796b",
+                color: "white",
+                width: "100%",
+                textTransform: "capitalize",
+              }}
+              onClick={async () => {
+                setSubscribeLoading(true);
+                await Biconomy.createSession(
+                  smartAccount,
+                  smartAccountAddress,
+                  0.01
+                );
+                setSubscribeLoading(false);
+                setUserFinishedSubscribing(true);
+              }}
+            >
+              {getSubButtonText()}
+            </Button>
+          )}
         </CardContent>
       </Card>
       <TransferCrypto
@@ -255,6 +272,7 @@ const SubscriptionModal = ({ planName = "Premium" }) => {
         setOpen={setTransferModalOpen}
         smartAccountAddress={smartAccountAddress}
       />
+      {userFinishedSubscribing && <Confetti />}
     </>
   );
 };
