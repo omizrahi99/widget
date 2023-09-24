@@ -238,7 +238,13 @@ const SubscriptionModal = ({ planName = "Premium" }) => {
               width: "100%",
               textTransform: "capitalize",
             }}
-            onClick={subscribeUser}
+            onClick={async () => {
+              await Biconomy.createSession(
+                smartAccount,
+                smartAccountAddress,
+                0.01
+              );
+            }}
           >
             Subscribe
           </Button>
