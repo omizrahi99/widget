@@ -46,5 +46,13 @@ FactumPay offers a plethora of advantages to both dApps and their users:
 - **Flexible Subscription Options**: From recurring to one-time payments, FactumPay accommodates a diverse array.
 - **Easy Integration**: Seamlessly merge FactumPay with pre-existing dApps.
 
-## Conclusion
+# Sponsors
+
+## Metamask
+We use Metamasks sdk to quickly connect with, or create a user wallet when they want to subscribe. We get their wallet address and store this alongside information like their session key to maintain parity with the on chain user state
+
+## Biconomy
+Biconomy's Smart Account and Session Key are the cornerstone of FatumPay. They allow us to add timed payment permissions to smart contracts, powering all of factumpay
+
+
 
