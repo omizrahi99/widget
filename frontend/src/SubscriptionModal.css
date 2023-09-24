@@ -1,0 +1,11 @@
+#addFunds {
+  text-transform: capitalize;
+  display: flex;
+  background-color: transparent;
+  padding: 0;
+  margin-top: 5px;
+}
+
+#addFunds:hover {
+  background-color: transparent;
+}
