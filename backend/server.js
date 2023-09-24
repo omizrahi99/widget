@@ -9,6 +9,12 @@ const PORT = 3000;
 // Middlewares
 app.use(bodyParser.json()); // Parse JSON request body
 
+const PaymentStatus = {
+    PAID: 'paid',
+    UNPAID: 'unpaid',
+    DUE: 'due'
+};
+
 // POST route to add a user
 app.post('/add-user', (req, res) => {
     try {
@@ -64,16 +70,16 @@ async function updateUserState() {
     const payers = await getPayersFromLastBlock();
 
     payers.forEach(payerAddress => {
-        if (storage[payerAddress]) {  // Check if payer exists in our mock storage
-            storage[payerAddress].payState = true;
-        }
+        Storage.updateUserState(payerAddress,PAID)
     });
 }
+
+
 
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
 
     getPayersFromLastBlock()
 
-    setInterval(getPayersFromLastBlock, 12000);
+    setInterval(updateUserState, 12000);
 });
