@@ -27,6 +27,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
     <MetaMaskProvider
       sdkOptions={{
         logging: {},
+        checkInstallationImmediately: false, // This will automatically connect to MetaMask on page load
         dappMetadata: {
           name: "Demo React App",
           url: window.location.host,

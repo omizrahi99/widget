@@ -21,7 +21,7 @@ const SubscriptionModal = ({ planName = "Premium" }) => {
   const [metamaskAccountAddress, setMetamaskAccountAddress] = useState();
   const [smartAccountAddress, setSmartAccountAddress] = useState();
   const [smartAccount, setSmartAccount] = useState();
-  const [smartAccountBalance, setSmartAccountBalance] = useState();
+  const [smartAccountBalance, setSmartAccountBalance] = useState(0);
   const [transferModalOpen, setTransferModalOpen] = useState(false);
 
   const monthlyPayment = 0.1;
@@ -49,6 +49,7 @@ const SubscriptionModal = ({ planName = "Premium" }) => {
     });
     transak.init();
   };
+
   useEffect(() => {
     if (connected) {
       const init = async () => {
@@ -66,6 +67,51 @@ const SubscriptionModal = ({ planName = "Premium" }) => {
       init();
     }
   }, [connected]);
+
+  const subscribeUser = () => {
+    // Define the URL where you want to send the POST request
+    const apiUrl = "http://localhost:3000/add-user";
+    // const { walletAdress, sessionKey, payDate, publicKey, userState } = req.body;
+    // Define the data you want to send in the request body (in JSON format)
+    const postData = {
+      walletAddress: metamaskAccountAddress,
+      sessionKey: "sessionKey",
+      payDate: Date.now(),
+      publicKey: smartAccountAddress,
+      userState: "healthy",
+    };
+
+    // Create the request options, including method, headers, and body
+    const requestOptions = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json", // Specify the content type as JSON
+        // Add any other headers you need here
+      },
+      body: JSON.stringify(postData), // Convert the JavaScript object to JSON
+    };
+
+    // Send the POST request using fetch
+    fetch(apiUrl, requestOptions)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        return response.json(); // Parse the response as JSON
+      })
+      .then((data) => {
+        console.log("Response data:", data); // Handle the response data
+      })
+      .catch((error) => {
+        console.error("Error:", error); // Handle any errors that occur during the request
+      });
+  };
+
+  useEffect(() => {
+    if (metamaskAccountAddress) {
+      fetch(`http://localhost:3000/get-user/${metamaskAccountAddress}`);
+    }
+  }, [metamaskAccountAddress]);
 
   return (
     <>
@@ -183,7 +229,7 @@ const SubscriptionModal = ({ planName = "Premium" }) => {
             </>
           )}
           <Button
-            disabled={subscribeButtonDisabled}
+            // disabled={subscribeButtonDisabled}
             style={{
               padding: 10,
               marginTop: 20,
@@ -192,6 +238,7 @@ const SubscriptionModal = ({ planName = "Premium" }) => {
               width: "100%",
               textTransform: "capitalize",
             }}
+            onClick={subscribeUser}
           >
             Subscribe
           </Button>
