@@ -18,6 +18,7 @@ import ContractAddresses from "./ContractAddresses.js";
 
 const sessionKeyEOA = '0xa2d4fB0440634a9a358AED866C30A5Adc46207BA';
 
+
 const Biconomy = {
   createModule: async () => {
     const ownerShipModule = await ECDSAOwnershipValidationModule.create({
@@ -29,9 +30,15 @@ const Biconomy = {
   createAccount: async () => {
     try {
       const module = await Biconomy.createModule();
+      const bundler = new Bundler({
+        bundlerUrl: `https://bundler.biconomy.io/api/v2/${ChainId.LINEA_TESTNET}/nJPK7B3ru.dd7f7861-190d-41bd-af80-6877f74b8f44`,    
+        chainId: ChainId.LINEA_TESTNET,
+        entryPointAddress: DEFAULT_ENTRYPOINT_ADDRESS,
+      })
       const biconomySmartAccount = await BiconomySmartAccountV2.create({
         chainId: ChainId.LINEA_TESTNET, //or any chain of your choice
-        entryPointAddress: DEFAULT_ENTRYPOINT_ADDRESS, //entry point address for chain
+        entryPointAddress: DEFAULT_ENTRYPOINT_ADDRESS, //entry point address for chain,
+        bundler: 
         defaultValidationModule: module, // either ECDSA or Multi chain to start
         activeValidationModule: module, // either ECDSA or Multi chain to start
       });
@@ -40,12 +47,6 @@ const Biconomy = {
     } catch (e) {
       console.log(e);
     }
-  },
-  isEnabled: async  biconomySmartAccount => {
-    const managerModuleAddr = DEFAULT_SESSION_KEY_MANAGER_MODULE;
-    const isEnabled = await biconomySmartAccount.isModuleEnabled(
-      managerModuleAddr
-    );
   },
   createSession: async (biconomySmartAccount, smartAccountAddress, subscriptionAmountEth, start = 0, end = 0, contractAddressKey = 'linea') => {
     let biconomySmartAccount = smartAccount;
@@ -67,7 +68,7 @@ const Biconomy = {
       [
         sessionKeyEOA,
         sessionKeyEOA, // receiver address
-        (10 ** 18) * subscriptionAmountEth, 
+        ethers.utils.parseEther(subscriptionAmountEth), 
       ]
     );
 
@@ -89,7 +90,10 @@ const Biconomy = {
     };
 
     let transactionArray = [];
-    if (enableSessionKeyModule) {
+    const isEnabled = await biconomySmartAccount.isModuleEnabled(
+      managerModuleAddr
+    );
+    if (!isEnabled) {
       // -----> enableModule session manager module
       const tx1 = await biconomySmartAccount.getEnableModuleData(
         managerModuleAddr
