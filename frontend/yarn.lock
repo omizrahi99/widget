@@ -331,6 +331,57 @@
     source-map-support "^0.5.19"
     typescript "^4.3.5"
 
+"@biconomy-devx/common@^2.0.26":
+  version "2.0.26"
+  resolved "https://registry.yarnpkg.com/@biconomy-devx/common/-/common-2.0.26.tgz#f63f4efeead0a3b9b77622b14ed527f715633077"
+  integrity sha512-ADvEIG6xlPCn1F3ve2mYeMvRxKCKEapRV1b3lSxf0fV8VBgikWZtgVHPVunNmUSV10jplmUyhZ9dfHT8n32y1Q==
+  dependencies:
+    "@account-abstraction/contracts" "^0.6.0"
+    "@biconomy-devx/core-types" "^2.0.26"
+    "@biconomy-devx/node-client" "^2.0.26"
+    "@ethersproject/abi" "^5.7.0"
+    "@ethersproject/bytes" "^5.7.0"
+    "@ethersproject/providers" "^5.7.0"
+    "@openzeppelin/contracts" "^4.7.3"
+    "@typechain/ethers-v5" "^10.2.0"
+    concurrently "^7.4.0"
+    debug "^4.3.4"
+    ethers "^5.7.0"
+    typechain "^8.1.1"
+
+"@biconomy-devx/core-types@^2.0.26":
+  version "2.0.26"
+  resolved "https://registry.yarnpkg.com/@biconomy-devx/core-types/-/core-types-2.0.26.tgz#65641e958c75bc0cd9c8388aa9ee015c154e5c90"
+  integrity sha512-bIIAhLkf0szykwFcnQgwLzEowItG1l95yidB05LWlN9bxA8P6+FrTJRcHk+1jAUWD+IPf2PfZjheINPhuWIafg==
+  dependencies:
+    "@ethersproject/bignumber" "^5.6.0"
+    "@ethersproject/contracts" "^5.6.0"
+    "@ethersproject/providers" "^5.7.0"
+    ethers "^5.7.2"
+    web3-core "^1.7.1"
+
+"@biconomy-devx/modules@^2.0.26":
+  version "2.0.26"
+  resolved "https://registry.yarnpkg.com/@biconomy-devx/modules/-/modules-2.0.26.tgz#b689ab717f7d4fffd1eb0c0d65d70e0d16bf3267"
+  integrity sha512-ZQmDLFBGSb2sb0Il7kP2YOk27Hw8pQ7qZ6O+eSbGooc8J73xm+NDhGAz8OpaSLsle19LJvEZPGYPdXjQ5qRopA==
+  dependencies:
+    "@biconomy-devx/common" "^2.0.26"
+    "@biconomy-devx/core-types" "^2.0.26"
+    "@biconomy-devx/node-client" "^2.0.26"
+    ethereumjs-util "^7.1.5"
+    ethers "^5.7.2"
+    merkletreejs "^0.3.9"
+
+"@biconomy-devx/node-client@^2.0.26":
+  version "2.0.26"
+  resolved "https://registry.yarnpkg.com/@biconomy-devx/node-client/-/node-client-2.0.26.tgz#7b5229af75182a340f2f664c9ca7eeaba07b80de"
+  integrity sha512-fPQX4eVq8t3uSJWsWXrZI5RZ1BRp8T9I1ZNdCGxz1+18i6Mwn3/vQ4okr9YyBd7zcZ0dvAmFqjIIhi4lfQNCyQ==
+  dependencies:
+    "@biconomy-devx/core-types" "^2.0.26"
+    "@ethersproject/abstract-signer" "^5.6.0"
+    "@nomiclabs/hardhat-ethers" "^2.1.0"
+    node-fetch "^2.6.6"
+
 "@biconomy/account@^3.1.0":
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/@biconomy/account/-/account-3.1.0.tgz#9829e44d76e271ec7d85a6bb1dd53dbf3abfbba1"

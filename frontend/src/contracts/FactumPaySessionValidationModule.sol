@@ -3,7 +3,9 @@ pragma solidity 0.8.17;
 import "./ISessionValidationModule.sol";
 import {ECDSA} from "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 
-contract ERC20SessionValidationModule is ISessionValidationModule {
+contract NativeTransferSessionValidationModule is ISessionValidationModule {
+    error SubscriptionUtilised();
+
     uint256 public lastPaymentTimestamp;
 
     function validateSessionParams(
@@ -13,6 +15,7 @@ contract ERC20SessionValidationModule is ISessionValidationModule {
         bytes calldata _sessionKeyData,
         bytes calldata /*_callSpecificData*/
     ) external virtual override returns (address) {
+        (destinationContract);
         (
             address sessionKey,
             address recipient,
@@ -36,7 +39,7 @@ contract ERC20SessionValidationModule is ISessionValidationModule {
         bytes32 _userOpHash,
         bytes calldata _sessionKeyData,
         bytes calldata _sessionKeySignature
-    ) external pure override returns (bool) {
+    ) external override returns (bool) {
         require(
             bytes4(_op.callData[0:4]) == EXECUTE_OPTIMIZED_SELECTOR ||
                 bytes4(_op.callData[0:4]) == EXECUTE_SELECTOR,
@@ -47,42 +50,33 @@ contract ERC20SessionValidationModule is ISessionValidationModule {
             address recipient,
             uint256 subscriptionAmount
         ) = abi.decode(_sessionKeyData, (address, address, uint256));
-        
-        require(block.timestamp - lastPaymentTimestamp >= 30 days, "Payment can only be made once a month");
+
+        if (
+            block.timestamp - lastPaymentTimestamp < 30 days &&
+            lastPaymentTimestamp != 0
+        ) {
+            revert SubscriptionUtilised();
+        }
         lastPaymentTimestamp = block.timestamp;
 
-        {
-            (uint256 callValue, ) = abi.decode(
+        (address target, uint256 callValue /*bytes memory func*/, ) = abi
+            .decode(
                 _op.callData[4:], // skip selector
-                (uint256, bytes)
+                (address, uint256, bytes)
             );
-            if (callValue != 0) {
-                revert("Non Zero Value");
-            }
+        if (callValue != 0) {
+            revert("Non Zero Value");
         }
-
-        bytes calldata data;
-
-        {
-            uint256 offset = uint256(bytes32(_op.callData[4 + 64:4 + 96]));
-            uint256 length = uint256(
-                bytes32(_op.callData[4 + offset:4 + offset + 32])
-            );
-            data = _op.callData[4 + offset + 32:4 + offset + 32 + length];
-        }
-
-        (address recipientCalled, uint256 amount) = abi.decode(
-            data[4:],
-            (address, uint256)
-        );
-
-        if (recipientCalled != recipient) {
-            revert("Wrong Recipient");
-        }
-        if (amount > subscriptionAmount) {
+        /*if (func.length != 0) {
+            revert("Must be native transfer"); 
+        }*/
+        if (callValue > subscriptionAmount) {
             revert("Max Amount Exceeded");
         }
-        
+        if (target != recipient) {
+            revert("Wrong Recipient");
+        }
+
         return
             ECDSA.recover(
                 ECDSA.toEthSignedMessageHash(_userOpHash),
