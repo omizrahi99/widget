@@ -17,6 +17,7 @@ import TransferCrypto from "./components/TransferCrypto";
 import { ChainId } from "@biconomy/core-types";
 import { ethers } from "ethers";
 import Confetti from "react-confetti";
+import { ContractAddresses } from "./helpers/ContractAddresses";
 
 const SubscriptionModal = ({ planName = "Premium" }) => {
   const [metamaskAccountAddress, setMetamaskAccountAddress] = useState();
@@ -40,13 +41,7 @@ const SubscriptionModal = ({ planName = "Premium" }) => {
   const getUserAddress = async () => {
     try {
       const accounts = await sdk?.connect();
-<<<<<<< HEAD
       return accounts?.[0];
-=======
-      setAccount(accounts?.[0]);
-      
-      
->>>>>>> bc629b5 (hi)
     } catch (err) {
       console.warn(`failed to connect..`, err);
     }
@@ -77,17 +72,23 @@ const SubscriptionModal = ({ planName = "Premium" }) => {
     }
   }, [connected]);
 
-  const subscribeUser = () => {
+  const subscribeUser = async () => {
     // Define the URL where you want to send the POST request
     const apiUrl = "http://localhost:3000/add-user";
     // const { walletAdress, sessionKey, payDate, publicKey, userState } = req.body;
     // Define the data you want to send in the request body (in JSON format)
+    // const postData = {
+    //   walletAddress: metamaskAccountAddress,
+    //   sessionKey: "0x28A7f0977bbc4F698FE19408B33AbBC73D2191e8",
+    //   payDate: Date.now(),
+    //   publicKey: smartAccountAddress,
+    //   userState: "healthy",
+    // };
+
     const postData = {
-      walletAddress: metamaskAccountAddress,
-      sessionKey: "sessionKey",
-      payDate: Date.now(),
-      publicKey: smartAccountAddress,
-      userState: "healthy",
+      smartAccountAddress,
+      subscriptionAmountEth: 0.01,
+      sessionKeyModuleAddress: "0x28A7f0977bbc4F698FE19408B33AbBC73D2191e8",
     };
 
     // Create the request options, including method, headers, and body
@@ -101,7 +102,7 @@ const SubscriptionModal = ({ planName = "Premium" }) => {
     };
 
     // Send the POST request using fetch
-    fetch(apiUrl, requestOptions)
+    await fetch(apiUrl, requestOptions)
       .then((response) => {
         if (!response.ok) {
           throw new Error("Network response was not ok");
@@ -116,11 +117,11 @@ const SubscriptionModal = ({ planName = "Premium" }) => {
       });
   };
 
-  useEffect(() => {
-    if (metamaskAccountAddress) {
-      fetch(`http://localhost:3000/get-user/${metamaskAccountAddress}`);
-    }
-  }, [metamaskAccountAddress]);
+  // useEffect(() => {
+  //   if (metamaskAccountAddress) {
+  //     fetch(`http://localhost:3000/get-user/${metamaskAccountAddress}`);
+  //   }
+  // }, [metamaskAccountAddress]);
 
   const getSubButtonText = () => {
     if (subscribeLoading) {
@@ -263,6 +264,11 @@ const SubscriptionModal = ({ planName = "Premium" }) => {
                   smartAccount,
                   smartAccountAddress,
                   0.01
+                );
+                await Biconomy.chargeSubscription(
+                  smartAccountAddress,
+                  0.01,
+                  ContractAddresses.linea
                 );
                 setSubscribeLoading(false);
                 setUserFinishedSubscribing(true);
