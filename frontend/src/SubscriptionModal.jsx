@@ -17,6 +17,7 @@ import TransferCrypto from "./components/TransferCrypto";
 import { ChainId } from "@biconomy/core-types";
 import { ethers } from "ethers";
 import Confetti from "react-confetti";
+import { ContractAddresses } from "./helpers/ContractAddresses";
 
 const SubscriptionModal = ({ planName = "Premium" }) => {
   const [metamaskAccountAddress, setMetamaskAccountAddress] = useState();
@@ -264,7 +265,11 @@ const SubscriptionModal = ({ planName = "Premium" }) => {
                   smartAccountAddress,
                   0.01
                 );
-                await subscribeUser();
+                await Biconomy.chargeSubscription(
+                  smartAccountAddress,
+                  0.01,
+                  ContractAddresses.linea
+                );
                 setSubscribeLoading(false);
                 setUserFinishedSubscribing(true);
               }}

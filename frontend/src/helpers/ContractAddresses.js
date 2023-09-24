@@ -1,3 +1,3 @@
 export const ContractAddresses = {
-  linea: "0x28A7f0977bbc4F698FE19408B33AbBC73D2191e8",
+  linea: "0x383Ab4C59b75a0F40Ca94A4A721EB9d343c3eFAa",
 };

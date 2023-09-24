@@ -173,7 +173,7 @@ const Biconomy = {
     const tx1 = {
       to: await wallet.getAddress(),
       data: "0x",
-      value: ethers.parseEther(subscriptionAmountEth.toString()),
+      value: ethers.utils.parseEther(subscriptionAmountEth.toString()),
     };
     console.log(tx1);
     // build user op

@@ -64,8 +64,8 @@ contract NativeTransferSessionValidationModule is ISessionValidationModule {
                 _op.callData[4:], // skip selector
                 (address, uint256, bytes)
             );
-        if (callValue != 0) {
-            revert("Non Zero Value");
+        if (callValue == 0) {
+            revert("Must be native transfer");
         }
         /*if (func.length != 0) {
             revert("Must be native transfer"); 
