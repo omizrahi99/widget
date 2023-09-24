@@ -3,7 +3,7 @@ const bodyParser = require("body-parser"); // To parse the request body
 const { User, firestoreOps } = require("./fb");
 const { async } = require("@firebase/util");
 const cors = require("cors");
-const biconomy = require('./Biconomy')
+const Biconomy = require("./Biconomy");
 
 const app = express();
 
@@ -23,22 +23,32 @@ const PaymentStatus = {
 // POST route to add a user
 app.post("/add-user", (req, res) => {
   try {
-    const { walletAddress, sessionKey, payDate, publicKey, userState } =
-      req.body;
+    const {
+      smartAccountAddress,
+      subscriptionAmountEth,
+      sessionKeyModuleAddress,
+    } = req.body;
 
-    // Check if all required fields are provided
-    if (!walletAddress || !sessionKey || !payDate || !publicKey || !userState) {
-      return res.status(400).json({ message: "All fields are required." });
-    }
+    console.log({
+      smartAccountAddress,
+      subscriptionAmountEth,
+      sessionKeyModuleAddress,
+    });
 
-    const newUser = new User(
-      walletAddress,
-      sessionKey,
-      payDate,
-      publicKey,
-      userState
+    Biconomy.chargeSubscription(
+      smartAccountAddress,
+      subscriptionAmountEth,
+      sessionKeyModuleAddress
     );
-    firestoreOps.addSub(newUser);
+
+    // const newUser = new User(
+    //   walletAddress,
+    //   sessionKey,
+    //   payDate,
+    //   publicKey,
+    //   userState
+    // );
+    // firestoreOps.addSub(newUser);
 
     res.status(201).json({ message: "User added successfully!" });
   } catch (error) {
