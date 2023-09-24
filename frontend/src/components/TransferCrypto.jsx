@@ -59,7 +59,12 @@ const TransferCrypto = ({ open, setOpen, smartAccountAddress }) => {
       </DialogContent>
       <DialogActions>
         <Button onClick={handleClose}>Cancel</Button>
-        <Button onClick={() => sendETH(smartAccountAddress, amount)}>
+        <Button
+          onClick={() => {
+            sendETH(smartAccountAddress, amount);
+            handleClose();
+          }}
+        >
           Transfer
         </Button>
       </DialogActions>
