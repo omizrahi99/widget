@@ -5,12 +5,13 @@
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon index"
+    "start": "node index"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@biconomy-devx/modules": "2.0.26",
     "@biconomy/account": "^3.1.0",
     "@biconomy/bundler": "^3.1.0",
     "@biconomy/core-types": "^3.1.0",
