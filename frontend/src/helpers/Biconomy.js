@@ -38,7 +38,7 @@ const Biconomy = {
       const biconomySmartAccount = await BiconomySmartAccountV2.create({
         chainId: ChainId.LINEA_TESTNET, //or any chain of your choice
         entryPointAddress: DEFAULT_ENTRYPOINT_ADDRESS, //entry point address for chain,
-        bundler: 
+        bundler,
         defaultValidationModule: module, // either ECDSA or Multi chain to start
         activeValidationModule: module, // either ECDSA or Multi chain to start
       });
