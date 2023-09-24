@@ -6,7 +6,7 @@ import {ECDSA} from "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 contract NativeTransferSessionValidationModule is ISessionValidationModule {
     error SubscriptionUtilised();
 
-    uint256 public lastPaymentTimestamp;
+    mapping(address => uint256) lastPaymentTimestamps;
 
     function validateSessionParams(
         address destinationContract,
@@ -52,12 +52,12 @@ contract NativeTransferSessionValidationModule is ISessionValidationModule {
         ) = abi.decode(_sessionKeyData, (address, address, uint256));
 
         if (
-            block.timestamp - lastPaymentTimestamp < 30 days &&
-            lastPaymentTimestamp != 0
+            block.timestamp - lastPaymentTimestamps[_op.sender] < 30 days &&
+            lastPaymentTimestamps[_op.sender] != 0
         ) {
             revert SubscriptionUtilised();
         }
-        lastPaymentTimestamp = block.timestamp;
+        lastPaymentTimestamps[_op.sender] = block.timestamp;
 
         (address target, uint256 callValue /*bytes memory func*/, ) = abi
             .decode(
