@@ -18,6 +18,7 @@ import { ChainId } from "@biconomy/core-types";
 import { ethers } from "ethers";
 import Confetti from "react-confetti";
 import { ContractAddresses } from "./helpers/ContractAddresses";
+import Chip from "@mui/material/Chip";
 
 const SubscriptionModal = ({ planName = "Premium" }) => {
   const [metamaskAccountAddress, setMetamaskAccountAddress] = useState();
@@ -174,6 +175,7 @@ const SubscriptionModal = ({ planName = "Premium" }) => {
               >
                 Subscription
               </Typography>
+
               <div
                 style={{
                   display: "flex",
@@ -278,6 +280,16 @@ const SubscriptionModal = ({ planName = "Premium" }) => {
             </Button>
           )}
         </CardContent>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "flex-end",
+            marginRight: 15,
+            marginBottom: 15,
+          }}
+        >
+          <Chip label="Powered by FactumPay"></Chip>
+        </div>
       </Card>
       <TransferCrypto
         open={transferModalOpen}
