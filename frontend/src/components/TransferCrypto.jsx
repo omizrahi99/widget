@@ -43,7 +43,7 @@ const TransferCrypto = ({ open, setOpen, smartAccountAddress }) => {
           <b>Destination:</b> {smartAccountAddress}
         </DialogContentText>
         <DialogContentText>
-          <b>Required minimum:</b> 0.1 ETH
+          <b>Required minimum:</b> 0.02 ETH
         </DialogContentText>
         <TextField
           autoFocus
