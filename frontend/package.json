@@ -10,7 +10,6 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@biconomy-devx/modules": "^2.0.26",
     "@biconomy/account": "^3.1.0",
     "@biconomy/bundler": "^3.1.0",
     "@biconomy/common": "^3.1.0",
