@@ -23,7 +23,7 @@ const SubscriptionModal = ({ planName = "Premium" }) => {
       console.warn(`failed to connect..`, err);
     }
   };
-
+  console.log(account);
   return (
     <Card sx={{ minWidth: 400, boxShadow: 3, borderRadius: 2 }}>
       <CardContent>
@@ -34,21 +34,23 @@ const SubscriptionModal = ({ planName = "Premium" }) => {
             gap: 5,
           }}
         >
-          <CircleIcon style={{ color: connected ? "#90EE90" : "red" }} />{" "}
+          <CircleIcon style={{ color: account ? "#90EE90" : "red" }} />{" "}
           {account ? "Wallet Connected" : "Wallet Not Connected"}
         </Typography>
-        <Button
-          style={{
-            display: "inline",
-            textTransform: "capitalize",
-            padding: 0,
-            paddingLeft: 0,
-            marginTop: 5,
-          }}
-          onClick={connect}
-        >
-          Connect Wallet
-        </Button>
+        {!account && (
+          <Button
+            style={{
+              display: "flex",
+              textTransform: "capitalize",
+              padding: 0,
+              paddingLeft: 0,
+              marginTop: 5,
+            }}
+            onClick={connect}
+          >
+            Connect Wallet
+          </Button>
+        )}
 
         <Card style={{ marginTop: 10 }} variant="outlined">
           <CardContent style={{ padding: "16px" }}>
@@ -102,20 +104,25 @@ const SubscriptionModal = ({ planName = "Premium" }) => {
             </div>
           </CardContent>
         </Card>
+        {account && (
+          <Button
+            id="addFunds"
+            onClick={() => {
+              const transak = new Transak("STAGING", {
+                walletAddress: account,
+              });
+              transak.init();
+            }}
+          >
+            Add Funds to Wallet
+          </Button>
+        )}
         <Button
-          id="addFunds"
-          onClick={() => {
-            const transak = new Transak("STAGING");
-            transak.init();
-          }}
-        >
-          Add Funds to Wallet
-        </Button>
-        <Button
+          disabled={!account}
           style={{
             padding: 10,
             marginTop: 20,
-            backgroundColor: "#00796b",
+            backgroundColor: !account ? "gray" : "#00796b",
             color: "white",
             width: "100%",
             textTransform: "capitalize",
