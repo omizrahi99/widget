@@ -40,13 +40,7 @@ const SubscriptionModal = ({ planName = "Premium" }) => {
   const getUserAddress = async () => {
     try {
       const accounts = await sdk?.connect();
-<<<<<<< HEAD
       return accounts?.[0];
-=======
-      setAccount(accounts?.[0]);
-      
-      
->>>>>>> bc629b5 (hi)
     } catch (err) {
       console.warn(`failed to connect..`, err);
     }
