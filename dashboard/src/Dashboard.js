@@ -24,14 +24,7 @@ import Orders from './Orders';
 
 function Copyright(props) {
   return (
-    <Typography variant="body2" color="text.secondary" align="center" {...props}>
-      {'Copyright © '}
-      <Link color="inherit" href="https://mui.com/">
-        Your Website
-      </Link>{' '}
-      {new Date().getFullYear()}
-      {'.'}
-    </Typography>
+    <br/>
   );
 }
 
@@ -173,7 +166,7 @@ export default function Dashboard() {
                     height: 240,
                   }}
                 >
-                  <Chart />
+                  <Orders />
                 </Paper>
               </Grid>
               {/* Recent Deposits */}
@@ -190,11 +183,10 @@ export default function Dashboard() {
                 </Paper>
               </Grid>
               {/* Recent Orders */}
-              <Grid item xs={12}>
+              {/* <Grid item xs={12}>
                 <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
-                  <Orders />
                 </Paper>
-              </Grid>
+              </Grid> */}
             </Grid>
             <Copyright sx={{ pt: 4 }} />
           </Container>

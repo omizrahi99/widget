@@ -53,6 +53,7 @@ export default function Deposits() {
   return (
     <React.Fragment>
       <Title>Current Balance</Title>
+      <Typography component="p" variant="p">Wallet: 0xa2d4fB04...</Typography>
       {gotBalance ? <Typography component="p" variant="h4">
         {balance.toPrecision(5)} ETH
       </Typography> : <Box sx={{ display: 'flex' }}><CircularProgress /></Box>}

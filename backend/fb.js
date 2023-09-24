@@ -8,32 +8,6 @@ initializeApp({
 });
 
 const db = getFirestore();
-
-class User {
-    constructor(walletAdress, sessionKey, payDate, publicKey, userState) {
-      this.walletAdress = walletAdress;
-      this.sessionKey = sessionKey;
-      this.payDate = payDate;
-      this.publicKey = publicKey;
-      this.userState = userState;
-    }
-
-    static fromJson(json) {
-        return new User(json.walletAdress, json.sessionKey, json.payDate, json.publicKey, json.userState);
-    }
-
-    // In your User class
-    toObject() {
-    return {
-        walletAdress: this.walletAdress,
-        sessionKey: this.sessionKey,
-        payDate: this.payDate,
-        publicKey: this.publicKey,
-        userState: this.userState
-    };
-}
-}
-
 const firestoreOps = {
     addSub: async (user) => {
         try {
@@ -88,6 +62,6 @@ const firestoreOps = {
 };
 
 module.exports = {
-    User,
+    
     firestoreOps
 };

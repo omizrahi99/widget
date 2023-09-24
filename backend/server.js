@@ -22,21 +22,19 @@ const PaymentStatus = {
 // POST route to add a user
 app.post("/add-user", (req, res) => {
   try {
-    const { walletAddress, sessionKey, payDate, publicKey, userState } =
+    const { walletAddress, sessionKey, payDate, publicKey, userState, amount,expireyDate,interval } =
       req.body;
 
-    // Check if all required fields are provided
-    if (!walletAddress || !sessionKey || !payDate || !publicKey || !userState) {
-      return res.status(400).json({ message: "All fields are required." });
-    }
-
-    const newUser = new User(
+    newUser={
       walletAddress,
       sessionKey,
       payDate,
       publicKey,
-      userState
-    );
+      userState,
+      amount,
+      expiryDate,
+      interval
+    }
     firestoreOps.addSub(newUser);
 
     res.status(201).json({ message: "User added successfully!" });

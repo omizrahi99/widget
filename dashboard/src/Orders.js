@@ -6,80 +6,60 @@ import TableCell from '@mui/material/TableCell';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Title from './Title';
-
-// Generate Order Data
-function createData(id, date, name, shipTo, paymentMethod, amount) {
-  return { id, date, name, shipTo, paymentMethod, amount };
-}
-
-const rows = [
-  createData(
-    0,
-    '16 Mar, 2019',
-    'Elvis Presley',
-    'Tupelo, MS',
-    'VISA ⠀•••• 3719',
-    312.44,
-  ),
-  createData(
-    1,
-    '16 Mar, 2019',
-    'Paul McCartney',
-    'London, UK',
-    'VISA ⠀•••• 2574',
-    866.99,
-  ),
-  createData(2, '16 Mar, 2019', 'Tom Scholz', 'Boston, MA', 'MC ⠀•••• 1253', 100.81),
-  createData(
-    3,
-    '16 Mar, 2019',
-    'Michael Jackson',
-    'Gary, IN',
-    'AMEX ⠀•••• 2000',
-    654.39,
-  ),
-  createData(
-    4,
-    '15 Mar, 2019',
-    'Bruce Springsteen',
-    'Long Branch, NJ',
-    'VISA ⠀•••• 5919',
-    212.79,
-  ),
-];
-
-function preventDefault(event) {
-  event.preventDefault();
-}
+import { db } from './firebase';
+import { collection, addDoc, getDocs } from "firebase/firestore";
+import moment from 'moment'
 
 export default function Orders() {
+  const [subscribers,setSubscribers]=React.useState([])
+  const fetchTransactions = async () => {
+
+    await getDocs(collection(db, "merchant1"))
+      .then((querySnapshot) => {
+        const newData = querySnapshot.docs
+          .map((doc) => ({ ...doc.data(), hash: doc.hash }));
+        // setTodos(newData);                
+        console.log(newData);
+        setSubscribers(newData)
+      })
+
+  }
+  React.useEffect(() => {
+    fetchTransactions();
+  }, [])
+  function preventDefault(event) {
+    event.preventDefault();
+  }
+
+
   return (
     <React.Fragment>
-      <Title>Recent Transactions</Title>
+      <Title>Subscribers</Title>
       <Table size="small">
         <TableHead>
           <TableRow>
-            <TableCell>Date</TableCell>
-            <TableCell>Name</TableCell>
-            <TableCell>Ship To</TableCell>
-            <TableCell>Payment Method</TableCell>
-            <TableCell align="right">Sale Amount</TableCell>
+            <TableCell>Public Key</TableCell>
+            <TableCell>Pay Date</TableCell>
+            <TableCell>Status</TableCell>
+            <TableCell>Subscription Interval</TableCell>
+            <TableCell>Amount</TableCell>
+
+            {/* <TableCell>Payment Method</TableCell> */}
           </TableRow>
         </TableHead>
         <TableBody>
-          {rows.map((row) => (
-            <TableRow key={row.id}>
-              <TableCell>{row.date}</TableCell>
-              <TableCell>{row.name}</TableCell>
-              <TableCell>{row.shipTo}</TableCell>
-              <TableCell>{row.paymentMethod}</TableCell>
-              <TableCell align="right">{`$${row.amount}`}</TableCell>
+          {subscribers.map((sub) => (
+            <TableRow key={sub.publicKey}>
+              <TableCell>{sub.publicKey}</TableCell>
+              <TableCell>{moment(new Date(sub.payDate)).format('MMMM Do YYYY, h:mm:ss a')}</TableCell>
+              <TableCell>{sub.userState}</TableCell>
+              {/* <TableCell>{sub.walletAdress}</TableCell> */}
             </TableRow>
           ))}
         </TableBody>
       </Table>
-      <Link color="primary" href="#" onClick={preventDefault} sx={{ mt: 3 }}>
-        See more orders
+      <Link color="primary" href="#" onClick={fetchTransactions} sx={{ mt: 3 }}>
+      Refresh      
       </Link>
     </React.Fragment>
   );
