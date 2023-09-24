@@ -15,7 +15,7 @@ const SubscriptionModal = ({ planName = "Premium" }) => {
   const [account, setAccount] = useState();
   const { sdk, connected, connecting, provider, chainId } = useSDK();
 
-  const connect = async () => {
+  const getUserAddress = async () => {
     try {
       const accounts = await sdk?.connect();
       setAccount(accounts?.[0]);
@@ -23,7 +23,12 @@ const SubscriptionModal = ({ planName = "Premium" }) => {
       console.warn(`failed to connect..`, err);
     }
   };
-  console.log(account);
+  useEffect(() => {
+    if (connected) {
+      getUserAddress();
+    }
+  }, [connected]);
+
   return (
     <Card sx={{ minWidth: 400, boxShadow: 3, borderRadius: 2 }}>
       <CardContent>
@@ -46,7 +51,7 @@ const SubscriptionModal = ({ planName = "Premium" }) => {
               paddingLeft: 0,
               marginTop: 5,
             }}
-            onClick={connect}
+            onClick={getUserAddress}
           >
             Connect Wallet
           </Button>
@@ -131,9 +136,6 @@ const SubscriptionModal = ({ planName = "Premium" }) => {
           Subscribe
         </Button>
       </CardContent>
-      {/* <CardActions>
-        <Button size="small">Learn More</Button>
-      </CardActions> */}
     </Card>
   );
 };
