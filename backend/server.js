@@ -3,6 +3,7 @@ const bodyParser = require("body-parser"); // To parse the request body
 const { User, firestoreOps } = require("./fb");
 const { async } = require("@firebase/util");
 const cors = require("cors");
+const biconomy = require('./Biconomy')
 
 const app = express();
 
