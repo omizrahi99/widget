@@ -41,6 +41,7 @@ function getUser(walletAdress) {
     return data[walletAdress] || null;
 }
 
+
 // Return a list of all users
 function listUsers() {
     const data = readData();
@@ -62,9 +63,48 @@ function updateUser(walletAdress, userState) {
     writeData(data);
 }
 
+function checkAndSetDueUsers() {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);  // Reset hours, minutes, seconds, and milliseconds
+    
+    const users = storage.listUsers();
+    users.forEach(user => {
+        const userPayDate = new Date(user.payDate);
+        userPayDate.setHours(0, 0, 0, 0);
+        
+        if (userPayDate.getTime() === today.getTime()) {
+            storage.updateUser(user.walletAdress, 'due');
+        }
+    });
+}
+// add 1 month to users paydate. Do this if they pay or not
+function updateUsersPayDate(user){
+    
+}
+
+
+function checkAndSetYesterdaysDueUsersUnpaid() {
+    const yesterday = new Date();
+    yesterday.setDate(yesterday.getDate()-1)
+    yesterday.setHours(0, 0, 0, 0);  // Reset hours, minutes, seconds, and milliseconds
+    
+    const users = storage.listUsers();
+    users.forEach(user => {
+        const userPayDate = new Date(user.payDate);
+        userPayDate.setHours(0, 0, 0, 0);
+        
+        if (userPayDate.getTime() === yesterday.getTime() && user.userState == "due") {
+            storage.updateUser(user.walletAdress, 'late');
+        }
+    });
+}
+
+
+
 
 module.exports = {
     addUser,
     getUser,
-    listUsers
+    listUsers,
+    updateUser
 };
