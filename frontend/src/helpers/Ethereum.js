@@ -1,14 +1,15 @@
-import { ethers } from 'ethers'
+import { ethers } from "ethers";
 
-const provider = new ethers.providers.Web3Provider(window.ethereum)
- 
 const Ethereum = {
-    getSigner: async () => {
-        return await provider.getSigner()
-    },
-    getAccounts: async () => {
-        return await provider.send("eth_requestAccounts", [])
-    }
-}
+  getProvider: () => {
+    return new ethers.providers.Web3Provider(window.ethereum);
+  },
+  getSigner: async () => {
+    return Ethereum.getProvider().getSigner();
+  },
+  getAccounts: async () => {
+    return await Ethereum.getProvider().send("eth_requestAccounts", []);
+  },
+};
 
-export default {Ethereum, provider}
+export { Ethereum };

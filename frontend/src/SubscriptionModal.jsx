@@ -10,133 +10,199 @@ import EthereumIcon from "./components/EthereumIcon";
 import Transak from "@biconomy/transak";
 import "./SubscriptionModal.css";
 import CircleIcon from "@mui/icons-material/Circle";
+import { Biconomy } from "./helpers/Biconomy";
+import { Ethereum } from "./helpers/Ethereum";
+import { Addresses } from "./helpers/Addresses";
+import TransferCrypto from "./components/TransferCrypto";
+import { ChainId } from "@biconomy/core-types";
+import { ethers } from "ethers";
 
 const SubscriptionModal = ({ planName = "Premium" }) => {
-  const [account, setAccount] = useState();
-  const { sdk, connected, connecting, provider, chainId } = useSDK();
+  const [metamaskAccountAddress, setMetamaskAccountAddress] = useState();
+  const [smartAccountAddress, setSmartAccountAddress] = useState();
+  const [smartAccount, setSmartAccount] = useState();
+  const [smartAccountBalance, setSmartAccountBalance] = useState();
+  const [transferModalOpen, setTransferModalOpen] = useState(false);
+
+  const monthlyPayment = 0.1;
+
+  const subscribeButtonDisabled =
+    !metamaskAccountAddress || smartAccountBalance < monthlyPayment;
+
+  console.log(smartAccountBalance);
+
+  const { sdk, connected, connecting, chainId } = useSDK();
+  console.log({ smartAccountAddress, metamaskAccountAddress });
 
   const getUserAddress = async () => {
     try {
       const accounts = await sdk?.connect();
-      setAccount(accounts?.[0]);
+      return accounts?.[0];
     } catch (err) {
       console.warn(`failed to connect..`, err);
     }
   };
+
+  const addFiatCallback = async () => {
+    const transak = new Transak("STAGING", {
+      walletAddress: smartAccountAddress,
+    });
+    transak.init();
+  };
   useEffect(() => {
     if (connected) {
-      getUserAddress();
+      const init = async () => {
+        setMetamaskAccountAddress(await getUserAddress());
+        const biconomySmartAccount = await Biconomy.createAccount();
+        setSmartAccount(biconomySmartAccount);
+        const smartAddress = await biconomySmartAccount.getAccountAddress();
+        setSmartAccountAddress(smartAddress);
+        const provider = new ethers.providers.Web3Provider(window.ethereum);
+        const balance = ethers.utils.formatEther(
+          await provider.getBalance(smartAddress)
+        );
+        setSmartAccountBalance(balance);
+      };
+      init();
     }
   }, [connected]);
 
   return (
-    <Card sx={{ minWidth: 400, boxShadow: 3, borderRadius: 2 }}>
-      <CardContent>
-        <Typography
-          style={{
-            display: "flex",
-            fontWeight: 500,
-            gap: 5,
-          }}
-        >
-          <CircleIcon style={{ color: account ? "#90EE90" : "red" }} />{" "}
-          {account ? "Wallet Connected" : "Wallet Not Connected"}
-        </Typography>
-        {!account && (
-          <Button
+    <>
+      <Card sx={{ minWidth: 400, boxShadow: 3, borderRadius: 2 }}>
+        <CardContent>
+          <Typography
             style={{
               display: "flex",
-              textTransform: "capitalize",
-              padding: 0,
-              paddingLeft: 0,
-              marginTop: 5,
+              fontWeight: 500,
+              gap: 5,
             }}
-            onClick={getUserAddress}
           >
-            Connect Wallet
-          </Button>
-        )}
-
-        <Card style={{ marginTop: 10 }} variant="outlined">
-          <CardContent style={{ padding: "16px" }}>
-            <Typography
-              style={{ fontWeight: 600, textAlign: "start", marginBottom: 10 }}
-            >
-              Subscription
-            </Typography>
-            <div
+            <CircleIcon
+              style={{ color: metamaskAccountAddress ? "#90EE90" : "red" }}
+            />{" "}
+            {metamaskAccountAddress
+              ? "Wallet Connected"
+              : "Wallet Not Connected"}
+          </Typography>
+          {!metamaskAccountAddress && (
+            <Button
               style={{
                 display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                gap: 5,
-                marginBottom: 10,
+                textTransform: "capitalize",
+                padding: 0,
+                paddingLeft: 0,
+                marginTop: 5,
               }}
+              onClick={getUserAddress}
             >
-              <Typography style={{ fontWeight: 300 }}>Premium Plan</Typography>
+              Connect Wallet
+            </Button>
+          )}
+
+          <Card style={{ marginTop: 10 }} variant="outlined">
+            <CardContent style={{ padding: "16px" }}>
               <Typography
                 style={{
-                  display: "flex",
-                  fontWeight: 300,
-                  alignItems: "center",
+                  fontWeight: 600,
+                  textAlign: "start",
+                  marginBottom: 10,
                 }}
               >
-                <span style={{ marginRight: 5 }}>
-                  <EthereumIcon />
-                </span>
-                0.1 ETH billed monthly
+                Subscription
               </Typography>
-            </div>
-            <Divider style={{ marginBottom: 10 }} />
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                gap: 5,
-              }}
-            >
-              <Typography fontWeight={500}>Due Today</Typography>
-              <Typography
-                style={{ display: "flex", alignItems: "center" }}
-                fontWeight={500}
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  gap: 5,
+                  marginBottom: 10,
+                }}
               >
-                {" "}
-                <span style={{ marginRight: 5 }}>
-                  <EthereumIcon />
-                </span>
-                0.1 ETH
+                <Typography style={{ fontWeight: 300 }}>
+                  Premium Plan
+                </Typography>
+                <Typography
+                  style={{
+                    display: "flex",
+                    fontWeight: 300,
+                    alignItems: "center",
+                  }}
+                >
+                  <span style={{ marginRight: 5 }}>
+                    <EthereumIcon />
+                  </span>
+                  0.1 ETH billed monthly
+                </Typography>
+              </div>
+              <Divider style={{ marginBottom: 10 }} />
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  gap: 5,
+                }}
+              >
+                <Typography fontWeight={500}>Due Today</Typography>
+                <Typography
+                  style={{ display: "flex", alignItems: "center" }}
+                  fontWeight={500}
+                >
+                  {" "}
+                  <span style={{ marginRight: 5 }}>
+                    <EthereumIcon />
+                  </span>
+                  0.1 ETH
+                </Typography>
+              </div>
+            </CardContent>
+          </Card>
+          {smartAccountAddress && (
+            <>
+              <Typography
+                id="balance"
+                fontSize="14px"
+                fontWeight={500}
+                display={"flex"}
+              >
+                Smart Account Balance
               </Typography>
-            </div>
-          </CardContent>
-        </Card>
-        {account && (
+              <Typography display={"flex"}>
+                {smartAccountBalance} ETH
+              </Typography>
+              <Button id="buyCrypto" onClick={addFiatCallback}>
+                Buy Crypto
+              </Button>
+              <Button
+                id="transferCrypto"
+                onClick={() => setTransferModalOpen(true)}
+              >
+                Transfer Crypto
+              </Button>
+            </>
+          )}
           <Button
-            id="addFunds"
-            onClick={() => {
-              const transak = new Transak("STAGING", {
-                walletAddress: account,
-              });
-              transak.init();
+            disabled={subscribeButtonDisabled}
+            style={{
+              padding: 10,
+              marginTop: 20,
+              backgroundColor: subscribeButtonDisabled ? "gray" : "#00796b",
+              color: "white",
+              width: "100%",
+              textTransform: "capitalize",
             }}
           >
-            Add Funds to Wallet
+            Subscribe
           </Button>
-        )}
-        <Button
-          disabled={!account}
-          style={{
-            padding: 10,
-            marginTop: 20,
-            backgroundColor: !account ? "gray" : "#00796b",
-            color: "white",
-            width: "100%",
-            textTransform: "capitalize",
-          }}
-        >
-          Subscribe
-        </Button>
-      </CardContent>
-    </Card>
+        </CardContent>
+      </Card>
+      <TransferCrypto
+        open={transferModalOpen}
+        setOpen={setTransferModalOpen}
+        smartAccountAddress={smartAccountAddress}
+      />
+    </>
   );
 };
 

@@ -1,11 +1,20 @@
-#addFunds {
+#buyCrypto,
+#transferCrypto {
   text-transform: capitalize;
   display: flex;
   background-color: transparent;
   padding: 0;
-  margin-top: 5px;
+  margin-top: 8px;
+}
+
+#transferCrypto {
+  margin-top: 0;
 }
 
 #addFunds:hover {
   background-color: transparent;
+}
+
+#balance {
+  margin-top: 8px;
 }
