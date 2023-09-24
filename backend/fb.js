@@ -44,6 +44,17 @@ const firestoreOps = {
             console.error("Error adding document: ", e);
         }
     },
+    addTran: async (tran)=>{
+        try {
+            console.log(tran.hash)
+            const docRef = db.collection('transactions').doc(tran.hash);
+            await docRef.set(tran);
+            console.log("Document written with ID: ", docRef.hash);
+        } catch (e) {
+            console.error("Error adding document: ", e);
+        }
+    },
+
     getSubList: async () => {
         const docs = [];
         const merchantRef = db.collection('merchant1');
