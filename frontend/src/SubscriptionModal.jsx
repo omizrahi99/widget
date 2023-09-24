@@ -1,13 +1,15 @@
 import React, { useEffect } from "react";
 import { useState } from "react";
-
 import Card from "@mui/material/Card";
-
+import { Button } from "@mui/material";
 import CardContent from "@mui/material/CardContent";
-
 import Typography from "@mui/material/Typography";
 import { Divider } from "@mui/material";
 import { useSDK } from "@metamask/sdk-react";
+import EthereumIcon from "./components/EthereumIcon";
+import Transak from "@biconomy/transak";
+import "./SubscriptionModal.css";
+import CircleIcon from "@mui/icons-material/Circle";
 
 const SubscriptionModal = ({ planName = "Premium" }) => {
   const [account, setAccount] = useState();
@@ -25,8 +27,31 @@ const SubscriptionModal = ({ planName = "Premium" }) => {
   return (
     <Card sx={{ minWidth: 400, boxShadow: 3, borderRadius: 2 }}>
       <CardContent>
-        <Card variant="outlined">
-          <CardContent>
+        <Typography
+          style={{
+            display: "flex",
+            fontWeight: 500,
+            gap: 5,
+          }}
+        >
+          <CircleIcon style={{ color: connected ? "#90EE90" : "red" }} />{" "}
+          {account ? "Wallet Connected" : "Wallet Not Connected"}
+        </Typography>
+        <Button
+          style={{
+            display: "inline",
+            textTransform: "capitalize",
+            padding: 0,
+            paddingLeft: 0,
+            marginTop: 5,
+          }}
+          onClick={connect}
+        >
+          Connect Wallet
+        </Button>
+
+        <Card style={{ marginTop: 10 }} variant="outlined">
+          <CardContent style={{ padding: "16px" }}>
             <Typography
               style={{ fontWeight: 600, textAlign: "start", marginBottom: 10 }}
             >
@@ -36,12 +61,22 @@ const SubscriptionModal = ({ planName = "Premium" }) => {
               style={{
                 display: "flex",
                 justifyContent: "space-between",
+                alignItems: "center",
                 gap: 5,
                 marginBottom: 10,
               }}
             >
               <Typography style={{ fontWeight: 300 }}>Premium Plan</Typography>
-              <Typography style={{ fontWeight: 300 }}>
+              <Typography
+                style={{
+                  display: "flex",
+                  fontWeight: 300,
+                  alignItems: "center",
+                }}
+              >
+                <span style={{ marginRight: 5 }}>
+                  <EthereumIcon />
+                </span>
                 0.1 ETH billed monthly
               </Typography>
             </div>
@@ -54,13 +89,40 @@ const SubscriptionModal = ({ planName = "Premium" }) => {
               }}
             >
               <Typography fontWeight={500}>Due Today</Typography>
-              <Typography fontWeight={500}>0.1 ETH</Typography>
+              <Typography
+                style={{ display: "flex", alignItems: "center" }}
+                fontWeight={500}
+              >
+                {" "}
+                <span style={{ marginRight: 5 }}>
+                  <EthereumIcon />
+                </span>
+                0.1 ETH
+              </Typography>
             </div>
           </CardContent>
         </Card>
-        <button style={{ padding: 10, margin: 10 }} onClick={connect}>
-          Connect
-        </button>
+        <Button
+          id="addFunds"
+          onClick={() => {
+            const transak = new Transak("STAGING");
+            transak.init();
+          }}
+        >
+          Add Funds to Wallet
+        </Button>
+        <Button
+          style={{
+            padding: 10,
+            marginTop: 20,
+            backgroundColor: "#00796b",
+            color: "white",
+            width: "100%",
+            textTransform: "capitalize",
+          }}
+        >
+          Subscribe
+        </Button>
       </CardContent>
       {/* <CardActions>
         <Button size="small">Learn More</Button>

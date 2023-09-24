@@ -25,12 +25,8 @@ const theme = createTheme({
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <MetaMaskProvider
-      debug={true}
       sdkOptions={{
-        logging: {
-          developerMode: true,
-        },
-        checkInstallationImmediately: true, // This will automatically connect to MetaMask on page load
+        logging: {},
         dappMetadata: {
           name: "Demo React App",
           url: window.location.host,
